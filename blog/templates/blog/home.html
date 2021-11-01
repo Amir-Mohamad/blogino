@@ -4,4 +4,8 @@
 {% block content %}
 
 <h1>Home page</h1>
+{% for i in object_list %}
+{{ i.title }}
+
+{% endfor %}
 {% endblock content %}
