@@ -17,6 +17,10 @@ class Category(models.Model):
 
 
 class Article(models.Model):
+    STATUS = [
+        ('D', 'Draft'),
+        ('P', 'Publish'),
+    ]
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     title = models.CharField(max_length=250)
     slug = models.SlugField(unique=True, null=True, blank=True)
@@ -24,12 +28,17 @@ class Article(models.Model):
     image = models.ImageField(upload_to='blog-images/')
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
-
+    status = models.CharField(max_length=250, choices=STATUS)
+    likes = models.ManyToManyField(
+        User, related_name='blog_like', null=True, blank=True)
     # def get_absolute_url(self):
     #     return reverse("articles:detail", kwargs={"slug": self.slug})
 
     def __str__(self):
         return self.title
+
+    def likes_count(self=None, d=None):
+        return self.likes.count()
 
     def save(self, *args, **kwargs):
         if self.slug is None:

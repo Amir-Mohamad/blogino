@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+
+{% block title %} - article {{obj.id}} {% endblock title %}
+
+
+{% block content %}
+
+{{article.title}}{{article.content}}
+
+<img src="{{article.image.url}}" alt="">
+{% endblock content %}
