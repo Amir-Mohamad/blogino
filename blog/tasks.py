@@ -12,7 +12,7 @@ app = Celery()
 @celery_app.task
 def task_like_article(article_id, user_id):
     """
-        Lets user to like an article 👇 
+        Lets user to like an article 👇
     """
     user = get_object_or_404(User, pk=user_id)
     article = get_object_or_404(Article, id=article_id)
