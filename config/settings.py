@@ -42,9 +42,12 @@ INSTALLED_APPS = [
     'blog.apps.BlogConfig',
     'accounts.apps.AccountsConfig',
 
+    'debug_toolbar',
+
 ]
 AUTH_USER_MODEL = 'accounts.User'
 MIDDLEWARE = [
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -88,7 +91,12 @@ DATABASES = {
     }
 }
 
-CELERY_BROKER_URL = os.environ.get("CELERY_BROKER", "redis://127.0.0.1:6379/0")
+""" #!!!
+ need to change (i think it will cause an error on connecting to redis,
+  because we should use redis server on docker containers not our system localhost)
+"""
+
+CELERY_BROKER_URL = os.environ.get("CELERY_BROKER", "redis://127.0.0.1:6379/0") 
 CELERY_RESULT_BACKEND = os.environ.get(
     "CELERY_BACKEND", "redis://127.0.0.1:6379/0")
 
@@ -144,3 +152,24 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # CELERY_ACCEPT_CONTENT = ['application/json']
 # CELERY_TASK_SERIALIZER = 'json'
 # CELERY_RESULT_SERIALIZER = 'json'
+
+
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://redis:6379/0",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient"
+        },
+        "KEY_PREFIX": "example"
+    }
+}
+CACHE_TTL = 60 * 10
+
+DEBUG_TOOLBAR_PATCH_SETTINGS = False
+
+INTERNAL_IPS = [
+    # ...
+    '127.0.0.1',
+    # ...
+]

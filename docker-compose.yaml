@@ -17,6 +17,7 @@ services:
     # env_file is used to manage the env variables of our project
     env_file:
       - ./.env/.dev-sample
+
     depends_on:
       - redis
       - db
@@ -32,6 +33,7 @@ services:
 
   redis:
     image: redis:5-alpine
+
 
   celery_worker:
     build:
@@ -80,3 +82,4 @@ services:
 
 volumes:
   postgres_data:
+  redisdata:

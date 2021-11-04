@@ -6,7 +6,6 @@ from config.celery import celery_app
 
 
 User = get_user_model()
-app = Celery()
 
 
 @celery_app.task
