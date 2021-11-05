@@ -4,8 +4,7 @@
 {% block content %}
 
 <h1>Home page</h1>
-{% for i in object_list %}
-{{ i.title }}
-
+{% for article in object_list %}
+    <p><a href="{% url 'blog:detail' article.id %}">{{ article.title }}</a></p>
 {% endfor %}
 {% endblock content %}

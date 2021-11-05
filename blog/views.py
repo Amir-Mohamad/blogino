@@ -14,12 +14,6 @@ from django.core.cache import cache
 
 CACHE_TTL = getattr(settings, 'CACHE_TTL', DEFAULT_TIMEOUT)
 
-# class HomePage(CacheMixin, ListView):
-#     cache_timeout = 60
-#     model = Article
-#     template_name = 'blog/home.html'
-
-
 def home(request):
     articles = Article.objects.all()
     if 'articles' in cache:
@@ -33,8 +27,20 @@ def home(request):
     })
 
 
-class ArticleDetailView(DetailView):
-    model = Article
+class ArticleDetailView(View):
+    template_name = 'blog/article_detail.html'
+
+    def get(self,request, pk):
+        article = get_object_or_404(Article, pk=pk)
+        if 'article' in cache:
+            data = cache.get('article')
+            return render(request, self.template_name, {
+            'obj': data,
+          })
+        cache.set('article', article, timeout=CACHE_TTL)
+        return render(request, self.template_name, {
+            'obj': article,
+        })
 
 class BlogLike(View):
 
@@ -44,4 +50,4 @@ class BlogLike(View):
         user_id = user.id
         task_like_article.delay(user_id=user_id, article_id=article_id)
 
-        return redirect('blog:home')
+        return redirect('blog:detail', article_id)

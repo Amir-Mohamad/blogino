@@ -32,7 +32,7 @@ class Article(models.Model):
     likes = models.ManyToManyField(
         User, related_name='blog_like', null=True, blank=True)
     # def get_absolute_url(self):
-    #     return reverse("articles:detail", kwargs={"slug": self.slug})
+    #     return reverse("blog:detail", kwargs={"id": self.id})
 
     def __str__(self):
         return self.title
