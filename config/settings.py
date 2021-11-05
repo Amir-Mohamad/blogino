@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'accounts.apps.AccountsConfig',
 
     'debug_toolbar',
+    'sorl.thumbnail',
 
 ]
 AUTH_USER_MODEL = 'accounts.User'

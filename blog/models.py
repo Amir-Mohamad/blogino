@@ -4,7 +4,7 @@ from django.urls import reverse
 from django.utils.text import slugify
 
 from blog.utils import slugify_instance_title
-
+from sorl.thumbnail import ImageField
 User = get_user_model()
 
 
@@ -22,10 +22,11 @@ class Article(models.Model):
         ('P', 'Publish'),
     ]
     author = models.ForeignKey(User, on_delete=models.CASCADE)
+    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True)
     title = models.CharField(max_length=250)
     slug = models.SlugField(unique=True, null=True, blank=True)
     content = models.TextField()
-    image = models.ImageField(upload_to='blog-images/')
+    image = ImageField(upload_to='blog-images/') # using sorl-thumbnail
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
     status = models.CharField(max_length=250, choices=STATUS)
