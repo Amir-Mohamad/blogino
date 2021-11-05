@@ -30,7 +30,7 @@ def home(request):
 class ArticleDetailView(View):
     template_name = 'blog/article_detail.html'
 
-    def get(self,request, pk):
+    def get(self, request, pk):
         article = get_object_or_404(Article, pk=pk)
         if 'article' in cache:
             data = cache.get('article')
@@ -41,6 +41,7 @@ class ArticleDetailView(View):
         return render(request, self.template_name, {
             'obj': article,
         })
+
 
 class BlogLike(View):
 
