@@ -3,7 +3,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.views.generic import ListView, DetailView, View
 from django.contrib.auth import get_user_model
 from .models import Article, Comment
-from .tasks import task_like_article
+from .tasks import task_like_article, task_send_mail
 from .mixins import CacheMixin
 from .forms import AddCommentForm, AddReplyForm
 from django.conf import settings
@@ -88,6 +88,7 @@ def add_reply(request, article_id, comment_id):
             reply.reply = comment
             reply.is_reply = True
             reply.save()
+            task_send_mail.delay(comment_id=comment.pk, user_id=comment.user.pk, user_replied_id=reply.user.pk)
             messages.success(request, 'your reply submitted successfully', 'success')
     return redirect('blog:detail', article.pk)
 
