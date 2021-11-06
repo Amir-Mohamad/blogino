@@ -1,18 +1,16 @@
 from random import randint
 from django.conf import settings
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
-from django.views.generic import CreateView, UpdateView, FormView
+from django.views.generic import UpdateView, FormView
 from django.contrib.auth import views
-from django.contrib.auth import login, logout
+from django.contrib.auth import login
 from django.contrib.messages.views import SuccessMessageMixin as message
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth.decorators import login_required
-from django.core.mail import send_mail
 from accounts.models import User
 from accounts.forms import RegisterForm, ProfileForm, VerifyForm
-
+from .tasks import task_auth_send_mail
 
 # Dashboard (Profile). for changing some data.(name, lastname and ...)
 class Profile(LoginRequiredMixin, message, UpdateView):
@@ -40,7 +38,7 @@ def UserRegister(request):
 		cd = form.cleaned_data
 		code = randint(10100, 30100)
 		subject = f'code: {code} for email: {cd["email"]}'
-		send_mail(subject, 'code', settings.EMAIL_HOST_USER, (cd['email'],))
+		task_auth_send_mail.delay(subject=subject, message=str(code), from_email=settings.EMAIL_HOST_USER, recipient_list=(cd['email'],))
 		return redirect('accounts:verify')
 	return render(request, 'accounts/register.html', {'form':form})
 
