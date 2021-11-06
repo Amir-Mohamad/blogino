@@ -10,5 +10,50 @@
 
 {% thumbnail obj.image "100x100" crop="center" as im %}
 <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+
 {% endthumbnail %}
+
+    {% with total=comments.count %}
+    <p>This article has {{ total }} comment{{ total|pluralize }}</p>
+    {% endwith %}
+
+
+    {% if request.user.is_authenticated %}
+    <a href="{% url 'blog:article_like' article.id %}"
+        class="btn btn-primary {% if can_like %}disabled {% endif %} col-md-2">Like {{ aritlce.likes_count }}</a>
+    {% endif %}
+
+        {% if request.user.is_authenticated %}
+        <form action="" method="post" novalidate class="col-md-6">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <input type="submit" value="Send" class="btn btn-primary">
+        </form>
+        {% else %}
+        <p>only logged in users can send comments</p>
+        {% endif %}<br /><br /><br />
+
+
+    {% for comment in comments %}
+    <div class="card bg-dark text-white">
+        <p class="card-header">{{ comment.user }} <a href="">reply</a></p>
+        <p class="card-body">{{ comment.body }}</p>
+        {% if request.user.is_authenticated %}
+        <div class="card-body">
+            <form action="{% url 'blog:add_reply' article.id comment.id %}" method="post">
+                {% csrf_token %}
+                {{ reply }}
+                <input type="submit" value="Send">
+            </form>
+        </div>
+        {% else %}
+        <p>you have to login to send reply</p>
+        {% endif %}
+        {% for reply in comment.rcomment.all %}
+        <p class="bg-primary text-white p-3 m-5">{{ reply.user }} <br /> {{ reply.body }}</p>
+        {% endfor %}
+    </div><br />
+    {% empty %}
+            <p>There is no comment</p>
+    {% endfor %}
 {% endblock content %}
