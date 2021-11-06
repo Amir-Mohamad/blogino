@@ -20,7 +20,7 @@
 
     {% if request.user.is_authenticated %}
     <a href="{% url 'blog:article_like' article.id %}"
-        class="btn btn-primary {% if can_like %}disabled {% endif %} col-md-2">Like {{ aritlce.likes_count }}</a>
+        class="btn btn-primary {% if can_like %}disabled {% endif %} col-md-2">Like {{ article.likes_count }}</a>
     {% endif %}
 
         {% if request.user.is_authenticated %}
