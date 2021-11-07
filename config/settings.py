@@ -44,10 +44,14 @@ INSTALLED_APPS = [
 
     'debug_toolbar',
     'sorl.thumbnail',
+    'rest_framework',
+    'corsheaders',
+    'rest_framework_simplejwt'
 
 ]
 AUTH_USER_MODEL = 'accounts.User'
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',    
     'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -181,3 +185,12 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'thisistestw1@gmail.com'
 EMAIL_HOST_PASSWORD = 'ideatest'
+
+
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    )
+}
+CORS_ORIGIN_ALLOW_ALL = True
