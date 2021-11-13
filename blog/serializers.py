@@ -2,7 +2,7 @@ from rest_framework import serializers
 from .models import Article, Category
 
 
-class ArticleListSerializer(serializers.ModelSerializer):
+class ArticleSerializer(serializers.ModelSerializer):
     article_likes_count = serializers.ReadOnlyField(source="likes_count")
     author = serializers.SerializerMethodField()
 
@@ -24,3 +24,5 @@ class ArticleListSerializer(serializers.ModelSerializer):
             'status',
             'article_likes_count'
         )
+
+    

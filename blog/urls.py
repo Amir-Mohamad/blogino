@@ -3,7 +3,8 @@ from . import views
 from . import api_views
 
 api_urls = [
-	path('article_list/', api_views.ArticleListView.as_view(), name='article_list')
+	path('article_list/', api_views.ArticleListView.as_view(), name='article_list'),
+	path('article_detail/<int:article_id>', api_views.ArticleDetailView.as_view(), name='article_detail'),
 ]
 
 
