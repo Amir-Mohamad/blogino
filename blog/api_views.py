@@ -1,4 +1,6 @@
 from django.shortcuts import get_object_or_404
+
+from .services import ArticleService
 from .models import Article, Category
 from rest_framework.generics import ListAPIView
 from rest_framework.views import APIView
@@ -14,29 +16,17 @@ CACHE_TTL = getattr(settings, 'CACHE_TTL', DEFAULT_TIMEOUT)
 
 
 class ArticleListView(APIView):
-    serializer_class = ArticleSerializer
+    service = ArticleService()
 
     def get(self, request):
-        articles = Article.objects.all()
-        if 'articles' in cache:
-            data = cache.get('articles')
-            return Response(data.data, status=status.HTTP_200_OK)
-        
-        serializer = self.serializer_class(articles, many=True)
-        cache.set('articles', serializer, timeout=CACHE_TTL)
+        serializer = self.service.get_all_article(request=request)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class ArticleDetailView(APIView):
-    serializer_class = ArticleSerializer
+    service = ArticleService()
 
     def get(self,request, article_id):
-        article = get_object_or_404(Article, pk=article_id)
-        if 'article' in cache:
-            data = cache.get('article')
-            return Response(data.data, status=status.HTTP_200_OK)
-        
-        serializer = self.serializer_class(article)
-        cache.set('article', serializer, timeout=CACHE_TTL)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        data = self.service.get_single_article(request=request, article_id=article_id)
+        return Response(data.data, status=status.HTTP_200_OK)
 
